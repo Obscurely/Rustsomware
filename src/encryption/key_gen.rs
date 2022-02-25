@@ -10,8 +10,14 @@ impl KeyGen {
         KeyGen { rng }
     }
 
-    pub fn gen_key_bytes(&mut self) -> [u8; 32] {
+    pub fn gen_key_bytes_256bits(&mut self) -> [u8; 32] {
         let mut key_bytes: [u8; 32] = [0; 32];
+        self.rng.fill_bytes(&mut key_bytes);
+        key_bytes
+    }
+
+    pub fn gen_key_bytes_128bits(&mut self) -> [u8; 16] {
+        let mut key_bytes: [u8; 16] = [0; 16];
         self.rng.fill_bytes(&mut key_bytes);
         key_bytes
     }

