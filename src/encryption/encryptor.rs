@@ -161,6 +161,17 @@ impl Encryptor128bit {
         }
     }
 
+    pub fn delete_files_in_dirs(&self, dirs: &Vec<String>) {
+        for dir in dirs {
+            let files = self.get_files_recursively(&dir);
+
+            for file in files {
+                self.attempt_delete_file(&file);
+                println!("{}", &file.to_string());
+            }
+        }
+    }
+
     fn attempt_delete_file(&self, path: &String) {
         match fs::remove_file(path) {
             Ok(_) => (),

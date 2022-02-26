@@ -123,29 +123,20 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
                     if path.is_dir() {
                         let path = path.display().to_string();
                         let path_split: Vec<&str> = path.split("\\").collect();
-                        if path_split.last().unwrap() == &"Documents"
-                            && &path == &documents_path_clone
-                        {
+                        let path_last_part = path_split.last().unwrap();
+                        if path_last_part == &"Documents" && &path == &documents_path_clone {
                             continue;
-                        } else if path_split.last().unwrap() == &"Pictures"
-                            && &path == &pictures_path_clone
-                        {
+                        } else if path_last_part == &"Pictures" && &path == &pictures_path_clone {
                             continue;
-                        } else if path_split.last().unwrap() == &"Videos"
-                            && &path == &video_path_clone
-                        {
+                        } else if path_last_part == &"Videos" && &path == &video_path_clone {
                             continue;
-                        } else if path_split.last().unwrap() == &"Music"
-                            && &path == &audio_path_clone
-                        {
+                        } else if path_last_part == &"Music" && &path == &audio_path_clone {
                             continue;
-                        } else if path_split.last().unwrap() == &"Desktop"
-                            && &path == &desktop_path_clone
-                        {
+                        } else if path_last_part == &"Desktop" && &path == &desktop_path_clone {
                             continue;
-                        } else if path_split.last().unwrap() == &"Downloads"
-                            && &path == &downloads_path_clone
-                        {
+                        } else if path_last_part == &"Downloads" && &path == &downloads_path_clone {
+                            continue;
+                        } else if path_last_part == &"AppData" {
                             continue;
                         }
 
@@ -222,7 +213,7 @@ fn add_non_important_folder_paths_on_drive_windows(
     }
 }
 
-pub fn add_folder_paths_windows(vec: &mut Vec<String>) {
+pub fn add_valuable_folder_paths_windows(vec: &mut Vec<String>) {
     add_important_folder_paths_windows(vec);
 
     match mountpoints::mountpaths() {
@@ -230,13 +221,28 @@ pub fn add_folder_paths_windows(vec: &mut Vec<String>) {
             for mountpath in &mountpaths {
                 add_possible_important_folder_paths_on_drive_windows(&mountpath, vec);
             }
+        }
+        Err(_) => (),
+    }
+}
 
+pub fn add_non_valuable_folder_paths_windows(vec: &mut Vec<String>) {
+    match mountpoints::mountpaths() {
+        Ok(mountpaths) => {
             for mountpath in &mountpaths {
                 add_non_important_folder_paths_on_drive_windows(&mountpath, vec);
             }
         }
         Err(_) => (),
     }
+
+    match dirs::data_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => vec.push(path_str.to_string().replace("\\Roaming", "")),
+            None => (),
+        },
+        None => (),
+    };
 }
 
 pub fn get_home_dir() -> Option<String> {
