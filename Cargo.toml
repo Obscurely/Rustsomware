@@ -17,3 +17,4 @@ mountpoints = "0.1.0"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.10.1"
+mslnk = "0.1.7"

