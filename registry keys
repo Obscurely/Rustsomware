@@ -14,6 +14,11 @@ DisableCMD = 1
 
 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System:
 HideFastUserSwitching = 1
+PromptOnSecureDesktop = 0
+EnableLUA = 1
+ConsentPromptBehaviorAdmin = 0
+ValidateAdminCodeSignatures = 0
+FilterAdministratorToken = 0
 
 HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\Explorer:
 HidePowerOptions = 1
