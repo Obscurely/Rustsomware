@@ -14,7 +14,6 @@ dirs = "4.0.0"
 walkdir = "2.3.2"
 sysinfo = "0.23.2"
 mountpoints = "0.1.0"
-winres = "0.1.12"
 
 [target.'cfg(windows)'.dependencies]
 winreg = "0.10.1"

