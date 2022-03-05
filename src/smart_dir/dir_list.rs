@@ -117,33 +117,39 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
     // Adds all the remaining folders in the home folder (that weren't yet added)
     match dirs::home_dir() {
         Some(path) => match path.to_str() {
-            Some(home_path) => {
-                for path in fs::read_dir(home_path).unwrap() {
-                    let path = path.unwrap().path();
-                    if path.is_dir() {
-                        let path = path.display().to_string();
-                        let path_split: Vec<&str> = path.split("\\").collect();
-                        let path_last_part = path_split.last().unwrap();
-                        if path_last_part == &"Documents" && &path == &documents_path_clone {
-                            continue;
-                        } else if path_last_part == &"Pictures" && &path == &pictures_path_clone {
-                            continue;
-                        } else if path_last_part == &"Videos" && &path == &video_path_clone {
-                            continue;
-                        } else if path_last_part == &"Music" && &path == &audio_path_clone {
-                            continue;
-                        } else if path_last_part == &"Desktop" && &path == &desktop_path_clone {
-                            continue;
-                        } else if path_last_part == &"Downloads" && &path == &downloads_path_clone {
-                            continue;
-                        } else if path_last_part == &"AppData" {
-                            continue;
-                        }
+            Some(home_path) => match fs::read_dir(home_path) {
+                Ok(read) => {
+                    for path in read.filter_map(|file| file.ok()) {
+                        let path = path.path();
+                        if path.is_dir() {
+                            let path = path.display().to_string();
+                            let path_split: Vec<&str> = path.split("\\").collect();
+                            let path_last_part = path_split.last().unwrap_or(&"Documents");
+                            if path_last_part == &"Documents" && &path == &documents_path_clone {
+                                continue;
+                            } else if path_last_part == &"Pictures" && &path == &pictures_path_clone
+                            {
+                                continue;
+                            } else if path_last_part == &"Videos" && &path == &video_path_clone {
+                                continue;
+                            } else if path_last_part == &"Music" && &path == &audio_path_clone {
+                                continue;
+                            } else if path_last_part == &"Desktop" && &path == &desktop_path_clone {
+                                continue;
+                            } else if path_last_part == &"Downloads"
+                                && &path == &downloads_path_clone
+                            {
+                                continue;
+                            } else if path_last_part == &"AppData" {
+                                continue;
+                            }
 
-                        vec.push(path);
+                            vec.push(path);
+                        }
                     }
                 }
-            }
+                Err(_) => (),
+            },
             None => (),
         },
         None => (),
