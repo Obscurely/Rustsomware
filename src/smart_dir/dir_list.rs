@@ -157,6 +157,47 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         },
         None => (),
     };
+
+    // Add other users paths
+    match dirs::home_dir() {
+        Some(home_path) => match home_path.file_name() {
+            Some(current_user) => {
+                let current_user = current_user.to_str().unwrap();
+                let to_replace = String::from("\\") + &current_user;
+                for folder in
+                    fs::read_dir(home_path.to_str().unwrap().replace(&to_replace, "")).unwrap()
+                {
+                    let folder = folder.unwrap().path();
+                    println!("{}", &folder.display().to_string());
+                    if folder.is_dir() {
+                        let folder = folder.display().to_string();
+                        let folder_split: Vec<&str> = folder.split("\\").collect();
+                        let folder_last_part = folder_split.last().unwrap();
+                        if folder_last_part == &current_user || folder_last_part == &"Public" {
+                            continue;
+                        }
+
+                        match fs::read_dir(folder) {
+                            Ok(read) => {
+                                for f in read.filter_map(|file| file.ok()) {
+                                    let f = f.path();
+                                    if f.is_dir() {
+                                        let folder_name = f.file_name().unwrap().to_str().unwrap();
+                                        if &folder_name != &"AppData" {
+                                            vec.push(f.display().to_string())
+                                        }
+                                    }
+                                }
+                            }
+                            Err(_) => (),
+                        }
+                    }
+                }
+            }
+            None => (),
+        },
+        None => (),
+    }
 }
 
 fn add_possible_important_folder_paths_on_drive_windows(
@@ -211,6 +252,47 @@ fn add_non_important_folder_paths_on_drive_windows(
             }
         }
     }
+
+    // AppData folder for the other users
+    match dirs::home_dir() {
+        Some(home_path) => match home_path.file_name() {
+            Some(current_user) => {
+                let current_user = current_user.to_str().unwrap();
+                let to_replace = String::from("\\") + &current_user;
+                for folder in
+                    fs::read_dir(home_path.to_str().unwrap().replace(&to_replace, "")).unwrap()
+                {
+                    let folder = folder.unwrap().path();
+                    println!("{}", &folder.display().to_string());
+                    if folder.is_dir() {
+                        let folder = folder.display().to_string();
+                        let folder_split: Vec<&str> = folder.split("\\").collect();
+                        let folder_last_part = folder_split.last().unwrap();
+                        if folder_last_part == &current_user || folder_last_part == &"Public" {
+                            continue;
+                        }
+
+                        match fs::read_dir(folder) {
+                            Ok(read) => {
+                                for f in read.filter_map(|file| file.ok()) {
+                                    let f = f.path();
+                                    if f.is_dir() {
+                                        let folder_name = f.file_name().unwrap().to_str().unwrap();
+                                        if &folder_name == &"AppData" {
+                                            vec.push(f.display().to_string())
+                                        }
+                                    }
+                                }
+                            }
+                            Err(_) => (),
+                        }
+                    }
+                }
+            }
+            None => (),
+        },
+        None => (),
+    }
 }
 
 pub fn add_valuable_folder_paths_windows(vec: &mut Vec<String>) {
@@ -253,4 +335,21 @@ pub fn get_home_dir() -> Option<String> {
         },
         None => None,
     }
+}
+
+pub fn get_users_windows() -> Vec<String> {
+    let mut users: Vec<String> = vec![];
+    match fs::read_dir("C:\\Users") {
+        Ok(read) => {
+            for folder in read {
+                let folder = folder.unwrap().path();
+                if folder.is_dir() {
+                    users.push(folder.display().to_string());
+                }
+            }
+        }
+        Err(_) => (),
+    }
+
+    users
 }

