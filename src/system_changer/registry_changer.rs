@@ -1,11 +1,8 @@
 use dirs;
 use mslnk::ShellLink;
-use rand::prelude::*;
-use rand_hc::Hc128Rng;
 use std::fs;
 use std::path::Path;
 use std::process::Command;
-use walkdir::WalkDir;
 use winreg;
 use winreg::enums::*;
 use winreg::RegKey;

@@ -166,6 +166,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e78d4f1cc4ae33bbfc157ed5d5a5ef3bc29227303d595861deb238fcec4e9457"
 
 [[package]]
+name = "embed-manifest"
+version = "1.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3080705673a71c4f4325d744d2e54021b2d16e379d8aa50495ab2c3ce552013f"
+
+[[package]]
 name = "fs_extra"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -390,6 +396,7 @@ version = "0.1.0"
 dependencies = [
  "aes-gcm-siv",
  "dirs",
+ "embed-manifest",
  "fs_extra",
  "mountpoints",
  "mslnk",
