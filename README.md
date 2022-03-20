@@ -148,13 +148,13 @@ Now onto when to use which method, it depends on the user you are attacking. If 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
-[contributors-shield]: https://img.shields.io/github/contributors/Obscurely/DiscordNitroSniper.svg?style=for-the-badge
-[contributors-url]: https://github.com/Obscurely/DiscordNitroSniper/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/Obscurely/DiscordNitroSniper.svg?style=for-the-badge
-[forks-url]: https://github.com/Obscurely/DiscordNitroSniper/network/members
-[stars-shield]: https://img.shields.io/github/stars/Obscurely/DiscordNitroSniper.svg?style=for-the-badge
-[stars-url]: https://github.com/Obscurely/DiscordNitroSniper/stargazers
-[issues-shield]: https://img.shields.io/github/issues/Obscurely/DiscordNitroSniper.svg?style=for-the-badge
-[issues-url]: https://github.com/Obscurely/DiscordNitroSniper/issues
-[license-shield]: https://img.shields.io/github/license/Obscurely/DiscordNitroSniper.svg?style=for-the-badge
-[license-url]: https://github.com/Obscurely/DiscordNitroSniper/blob/master/LICENSE
+[contributors-shield]: https://img.shields.io/github/contributors/Obscurely/Rustsomware.svg?style=for-the-badge
+[contributors-url]: https://github.com/Obscurely/Rustsomware/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/Obscurely/Rustsomware.svg?style=for-the-badge
+[forks-url]: https://github.com/Obscurely/Rustsomware/network/members
+[stars-shield]: https://img.shields.io/github/stars/Obscurely/Rustsomware.svg?style=for-the-badge
+[stars-url]: https://github.com/Obscurely/Rustsomware/stargazers
+[issues-shield]: https://img.shields.io/github/issues/Obscurely/Rustsomware.svg?style=for-the-badge
+[issues-url]: https://github.com/Obscurely/Rustsomware/issues
+[license-shield]: https://img.shields.io/github/license/Obscurely/Rustsomware.svg?style=for-the-badge
+[license-url]: https://github.com/Obscurely/Rustsomware/blob/master/LICENSE
