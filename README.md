@@ -85,12 +85,11 @@ The ransomware can be ran even without admin and will encrypt any file it can. (
 
 !!! I am not gonna give you precompiled binaries so any 7 year old can run this on their dad's computer.
 
-1. After compling it (check [compilation]#compilation) simply spin up a windows vm (or a real machine...), double click the exe say yes to admin and enjoy.
+1. After compling it (check [compilation](#compilation)) simply spin up a windows vm (or a real machine...), double click the exe say yes to admin and enjoy.
 
 ### Compilation
 
-This ransomware is made for windows only and will only compile for windows. The following steps require that you have rust installed, check their official [installation page](https://www.rust-lang.org/tools/install)
-Before going ahead and compiling I recommend that you at least look at the main.rs file in src folder and take a look at the 3 vars at the top and change them accordingly (also take a look at [the difference between the 2 startup options](
+This ransomware is made for windows only and will only compile for windows. The following steps require that you have rust installed, check their official [installation page](https://www.rust-lang.org/tools/install). Before going ahead and compiling I recommend that you at least look at the main.rs file in src folder and take a look at the 3 vars at the top and change them accordingly (also take a look at [the difference between the 2 startup options](#the-difference-between-the-2-startup-options)
 
 1.  Clone this repo on your pc, you can use "git clone", if you have git installed, like this:
 
